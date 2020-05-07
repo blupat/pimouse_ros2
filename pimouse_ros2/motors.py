@@ -13,7 +13,7 @@ import time
 import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import Twist
-from std_srvs.srv import Trigger, TriggerResponse
+from std_srvs.srv import Trigger
 
 
 class Motors(Node):
@@ -24,9 +24,9 @@ class Motors(Node):
 
     def __init__(self):
         super().__init__('motors')
-        self._subscriber = self.create_publisher(Twist, 'cmd_vel', Twist, self.callback_cmd_vel, 1)
-        self._service_on = self.create_service('motor_on', Trigger, self.callback_on)
-        self._service_off = self.create_service('motor_off', Trigger, self.callback_off)
+        self._subscriber = self.create_subscription(Twist, 'cmd_vel', self.callback_cmd_vel, 1)
+        self._service_on = self.create_service(Trigger, 'motor_on', self.callback_on)
+        self._service_off = self.create_service(Trigger, 'motor_off', self.callback_off)
         self.set_power(False)
         self._using_cmd_vel = False
         self._last_time = time.time()
@@ -62,17 +62,15 @@ class Motors(Node):
         self._using_cmd_vel = True
         self._last_time = time.time()
 
-    def _onoff_response(self, onoff):
-        d = TriggerResponse()
-        d.success = self.set_power(onoff)
-        d.message = "ON" if self._is_on else "OFF"
-        return d
+    def callback_on(self, request, response):
+        response.success = self.set_power(True)
+        response.message = "ON" if self._is_on else "OFF"
+        return response
 
-    def callback_on(self, message):
-        return self._onoff_response(True)
-
-    def callback_off(self, message):
-        return self._onoff_response(False)
+    def callback_off(self, request, response):
+        response.success = self.set_power(False)
+        response.message = "ON" if self._is_on else "OFF"
+        return response
 
     def timer_callback(self):
         if self._using_cmd_vel and (time.time() - self._last_time) >= 1.0:
