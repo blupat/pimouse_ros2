@@ -20,7 +20,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'lightsensors = ' + package_name + '.lightsensors:main'
+            'lightsensors = ' + package_name + '.lightsensors:main',
+            'motors = ' + package_name + '.motors:main'
         ],
     },
 )
