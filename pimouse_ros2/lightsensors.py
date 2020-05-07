@@ -19,7 +19,7 @@ class LightSensors(Node):
 
     def __init__(self):
         super().__init__('lightsensors')
-        self._publisher = self.create_publisher(LightSensorValues, 'lightsensors')
+        self._publisher = self.create_publisher(LightSensorValues, 'lightsensors', 1)
         self._lightsensors_period = self.get_period()
         self._timer = self.create_timer(self._lightsensors_period, self.timer_callback)
 
