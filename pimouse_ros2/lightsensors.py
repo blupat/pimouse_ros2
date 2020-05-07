@@ -42,7 +42,7 @@ class LightSensors(Node):
             except IOError:
                 self.get_logger().info("cannot write to " + devfile)
 
-        period = get_period()
+        period = self.get_period()
         if period != self._lightsensors_period:
             self._lightsensors_period = period
             self._timer.destroy()
