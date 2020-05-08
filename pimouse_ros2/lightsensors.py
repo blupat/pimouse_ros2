@@ -20,11 +20,13 @@ class LightSensors(Node):
     def __init__(self):
         super().__init__('lightsensors')
         self._publisher = self.create_publisher(LightSensorValues, 'lightsensors', 1)
+        self.declare_parameter('lightsensors_period', 0.1)
+        self.declare_parameter('lightsensors_enable', True)
         self._lightsensors_period = self.get_period()
         self._timer = self.create_timer(self._lightsensors_period, self.timer_callback)
 
     def timer_callback(self):
-        is_enable = self.get_parameter_or('lightsensors_enable', alternative_value=True)
+        is_enable = self.get_parameter('lightsensors_enable').value
         if is_enable:
             devfile = '/dev/rtlightsensor0'
             try:
@@ -49,7 +51,7 @@ class LightSensors(Node):
             self._timer = self.create_timer(self._lightsensors_period, self.timer_callback)
 
     def get_period(self):
-        period = self.get_parameter_or('lightsensors_period', alternative_value=0.1)
+        period = self.get_parameter('lightsensors_period').value
         try:
             if period <= 0.0:
                 raise Exception()

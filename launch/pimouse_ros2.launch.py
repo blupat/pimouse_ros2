@@ -17,7 +17,8 @@ import launch_ros.actions
 def generate_launch_description():
     return launch.LaunchDescription([
         launch_ros.actions.Node(
-            package='pimouse_ros2', node_executable='lightsensors', output='screen'),
+            package='pimouse_ros2', node_executable='lightsensors', output='screen',
+            parameters=[{'lightsensors_period': 0.05}]),
         launch_ros.actions.Node(
             package='pimouse_ros2', node_executable='motors', output='screen'),
     ])
